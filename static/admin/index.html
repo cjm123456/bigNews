@@ -20,7 +20,7 @@
         <a href="#" class="logo"><img src="images/logo02.png" alt="logo"></a>
         <div class="user_info">
             <img src="images/2.jpg" alt="person">
-            <span>欢迎&nbsp;&nbsp;李思思</span>
+            <span>欢迎&nbsp;&nbsp;<i style="font-style: normal">李思思</i></span>
             <b>管理员</b>
         </div>
         <!-- 左侧导航栏 -->
@@ -55,16 +55,42 @@
         </div>
     </div>
 </body>
+<script src="./libs/http.js"></script>
 <script>
     // 入口函数
-    $(function(){
-        // 一打开页面,发送ajax请求,拿到个人用户信息
-        $.ajax({
-            url:'http://localhost:8080/api/v1/admin/user/info',
+    $(function(){        
+        // 判断用户是否登录
+        if(localStorage.getItem('token')){
+            // 一打开页面,发送ajax请求,拿到个人用户信息
+            $.ajax({
+            url:BigNew.user_info,
             success:function(backData){
-                console.log(backData);
+                // console.log(backData);
+                if(backData.code==200){
+                    // 更换头像
+                    $('.user_info>img').attr('src',backData.data.userPic);
+                    // 更换名字
+                    $('.user_info>span>i').text(backData.data.nicName);
+                    // 更换顶部头像
+                    $('.user_center_link>img').attr('src',backData.data.userPic);
+                }
             }
         });
+        }else{
+            alert('您还没有登录');
+            // 跳转回登录页面
+            window.location='./login.html';
+        }
+
+        // 退出按钮绑定点击事件
+        $('.logout').on('click',function(){
+            // 删除token 即可
+            localStorage.removeItem('token');
+            alert('您已退出');
+            // 跳转回登录页面
+            window.location='./login.html';
+        })
+
     })
 </script>
 </html>
