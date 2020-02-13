@@ -1,8 +1,9 @@
 //  自执行函数  沙箱
 (function(w){
-    var baseURL='http:localhost:8080/api/v1';
+    // 注意不要写错 基地址  http://    基地址最好粘贴复制 不要手动写 ,容易出错
+    var baseURL='http://localhost:8080/api/v1';
     var BigNew={
-        baseURL,
+        baseURL:baseURL,
         user_login: baseURL+'/admin/user/login',//用户登录
         user_info:       baseURL + '/admin/user/info',//用户信息
         user_detail:     baseURL + '/admin/user/detail',//用户详情

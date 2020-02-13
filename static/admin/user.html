@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>文章列表</title>
+    <title>用户信息</title>
     <link rel="stylesheet" href="./libs/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/iconfont.css">
@@ -56,8 +56,7 @@
                 <div class="form-group">
                     <label for="inputEmail4" class="col-sm-2 control-label">密码：</label>
                     <div class="col-sm-4">
-                        <input type="password" name="password" class="form-control password" id="inputEmail4"
-                            value="12345678">
+                        <input type="password" name="password" class="form-control password" id="inputEmail4" value="12345678">
                     </div>
                 </div>
                 <div class="form-group">
@@ -69,5 +68,93 @@
         </div>
     </div>
 </body>
+<script src="./libs/http.js"></script>
+<script>
+    // 入口函数
+    $(function () {
+        // 一打开页面 发送ajax请求,拿到个人用户详细信息
+        $.ajax({
+            // 地址已经封装好了
+            url: BigNew.user_detail,
+            success: function (backData) {
+                // console.log(backData);
+
+                // $('.username').val(backData.data.username);
+                // $('.email').val(backData.data.email);
+                // $('.password').val(backData.data.password);
+                // $('.nickname').val(backData.data.nickname);
+                // 遍历对象, 给每个input 赋值 即可  不用给每个input单独设置了
+                for (let k in backData.data) {
+                    $('.' + k).val(backData.data[k]);
+                };
+                // 给头像赋值 路径
+                $('.user_pic').attr('src', backData.data.userPic);
+
+
+            }
+        });
+        // 给选择文件 绑定 值改变事件
+        $('#exampleInputFile').on('change', function () {
+            // 拿到文件
+            let file = this.files[0];
+            // 给文件创建 url路径
+            let url = URL.createObjectURL(file);
+            $(this).prev().attr('src', url);
+
+        })
+        // 给修改按钮绑定点击事件
+        $('.btn-edit').on('click', function (e) {
+            // 阻止默认行为
+            e.preventDefault();
+            // 创建 formData格式
+            let fd = new FormData(document.querySelector('form'));
+            // 发送ajax请求
+            $.ajax({
+                type: 'post',
+                url: BigNew.user_edit,
+                data: fd,
+                // 传送 formData格式 要加下面两行代码
+                contentType: false,
+                processData: false,
+                success: function (backData) {
+                    // console.log(backData);
+                    if (backData.code == 200) {
+                        alert(backData.msg);
+                        
+                        // jquery   子页面访问父页面 元素或方法 注意事项
+                        // 注意 下面两种方法 只能用 服务器方法打开才有用  用默认浏览器打开即本地文件 本地文件file:///打开会报这个错误，可以将其改为localhost访问
+
+                        // 刷新页面
+                        // 方法1
+                        // parent.window.location.reload();
+
+
+                        // 方法2 父窗口 index.html再次发送 ajax请求
+                        $.ajax({
+                            url: BigNew.user_info,
+                            success: function (backData) {
+                                console.log(backData);
+                                if (backData.code == 200) {
+                                    // jquery 在子页面获取父页面的标签, 在前面加上 parent
+                                    // 更换头像
+                                    // 调用父页面的 方法
+                                    parent.$('#lIcon').attr('src', backData.data.userPic);
+                                    // 从子页面拿到父页面的元素 方法
+                                    // $('#lIcon',parent.document).attr('src', backData.data.userPic);
+                                    // 更换名字
+                                    parent.$('#nickname').text(backData.data.nickname);
+                                    // $('#nickname',parent.document).text(backData.data.nickname);
+                                    // 更换顶部头像
+                                    $('#tIcon',parent.document).attr('src', backData.data.userPic);
+                                }
+                            }
+                        });
+                    }
+
+                }
+            })
+        })
+    })
+</script>
 
 </html>

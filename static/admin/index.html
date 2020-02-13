@@ -17,80 +17,140 @@
 
 <body>
     <div class="sider">
-        <a href="#" class="logo"><img src="images/logo02.png" alt="logo"></a>
+        <a href="#" class="logo">
+            <img src="images/logo02.png" alt="logo">
+        </a>
         <div class="user_info">
-            <img src="images/2.jpg" alt="person">
-            <span>欢迎&nbsp;&nbsp;<i style="font-style: normal">李思思</i></span>
+            <img src="images/2.jpg" alt="person" id="lIcon">
+            <span>欢迎&nbsp;&nbsp;
+                <i style="font-style: normal" id="nickname">李思思</i>
+            </span>
             <b>管理员</b>
         </div>
         <!-- 左侧导航栏 -->
         <div class="menu">
-            <div class="level01 active"><a href="#" target="main_frame"><i
-                        class="iconfont icon-yidiandiantubiao04"></i><span>首页</span></a></div>
-            <div class="level01"><a href="#"><i class="iconfont icon-icon-article"></i><span>文章管理</span><b
-                        class="iconfont icon-arrowdownl"></b></a></div>
+            <div class="level01 active">
+                <a href="./main_count.html" target="myIframe">
+                    <iclass="iconfont icon-yidiandiantubiao04">
+                        </i>
+                        <span>首页</span>
+                </a>
+            </div>
+            <div class="level01">
+                <a href="./article_list.html" target="myIframe">
+                    <i class="iconfont icon-icon-article"></i>
+                    <span>文章管理</span>
+                    <b class="iconfont icon-arrowdownl"></b>
+                </a>
+            </div>
             <ul class="level02">
-                <li><a href="#" target="main_frame"><i class="iconfont icon-previewright"></i><span>文章列表</span></a></li>
-                <li><a href="#" target="main_frame"><i class="iconfont icon-previewright"></i><span>发表文章</span></a></li>
-                <li><a href="#" target="main_frame"><i class="iconfont icon-previewright"></i><span>文章类别管理</span></a>
+                <li>
+                    <a href="./article_list.html" target="myIframe">
+                        <i class="iconfont icon-previewright"></i>
+                        <span>文章列表</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="./article_release.html" target="myIframe">
+                        <i class="iconfont icon-previewright"></i>
+                        <span>发表文章</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="./article_category.html" target="myIframe">
+                        <i class="iconfont icon-previewright"></i>
+                        <span>文章类别管理</span>
+                    </a>
                 </li>
             </ul>
 
-            <div class="level01"><a href="#" target="main_frame"><i
-                        class="iconfont icon-comment"></i><span>评论管理</span></a></div>
-            <div class="level01" id="user"><a href="#" target="main_frame"><i
-                        class="iconfont icon-user"></i><span>个人中心</span></a></div>
+            <div class="level01">
+                <a href="./comment_list.html" target="myIframe">
+                    <i class="iconfont icon-comment"></i>
+                    <span>评论管理</span>
+                </a>
+            </div>
+            <div class="level01" id="user">
+                <a href="./user.html" target="myIframe">
+                    <iclass="iconfont icon-user">
+                        </i>
+                        <span>个人中心</span>
+                </a>
+            </div>
         </div>
         <!-- 顶部栏 -->
         <div class="header_bar">
             <div class="user_center_link">
-                <a href="./user.html" target="main_frame">个人中心</a>
-                <img src="images/2.jpg" alt="person">
-                <a href="javascript:void(0)" class="logout"><i class="iconfont icon-tuichu"></i> 退出</a>
+                <a href="./user.html" target="myIframe">个人中心</a>
+                <img src="images/2.jpg" alt="person" id="tIcon">
+                <a href="javascript:void(0)" class="logout">
+                    <i class="iconfont icon-tuichu"></i> 退出</a>
             </div>
         </div>
         <!-- 右侧主体内容 -->
         <div class="main" id="main_body">
-
+            <iframe name="myIframe" src="./main_count.html" frameborder="0" style="width: 100%;height: 100%;"></iframe>
         </div>
     </div>
 </body>
 <script src="./libs/http.js"></script>
 <script>
     // 入口函数
-    $(function(){        
+    $(function () {
         // 判断用户是否登录
-        if(localStorage.getItem('token')){
+        if (localStorage.getItem('token')) {
             // 一打开页面,发送ajax请求,拿到个人用户信息
             $.ajax({
-            url:BigNew.user_info,
-            success:function(backData){
-                // console.log(backData);
-                if(backData.code==200){
-                    // 更换头像
-                    $('.user_info>img').attr('src',backData.data.userPic);
-                    // 更换名字
-                    $('.user_info>span>i').text(backData.data.nicName);
-                    // 更换顶部头像
-                    $('.user_center_link>img').attr('src',backData.data.userPic);
+                url: BigNew.user_info,
+                success: function (backData) {
+                    // console.log(backData);
+                    if (backData.code == 200) {
+                        // 更换头像
+                        $('.user_info>img').attr('src', backData.data.userPic);
+                        // 更换名字
+                        $('.user_info>span>i').text(backData.data.nickname);
+                        // 更换顶部头像
+                        $('.user_center_link>img').attr('src', backData.data.userPic);
+                    }
                 }
-            }
-        });
-        }else{
+            });
+        } else {
             alert('您还没有登录');
             // 跳转回登录页面
-            window.location='./login.html';
+            window.location = './login.html';
         }
 
         // 退出按钮绑定点击事件
-        $('.logout').on('click',function(){
+        $('.logout').on('click', function () {
             // 删除token 即可
             localStorage.removeItem('token');
-            alert('您已退出');
+            alert('你已退出');
             // 跳转回登录页面
-            window.location='./login.html';
+            window.location = './login.html';
+        });
+
+        // 侧边栏 1级导航栏 绑定点击事件
+        $('.level01').on('click', function () {
+            // 给点击的div 添加 active类,它的兄弟移除 active类
+            $(this).addClass('active').siblings().removeClass('active');
+            // 注意 jquery 后面的都是方法 没有属性
+            // 如果点击 文章管理, 让下面的ul 切换滑入滑出
+            if ($(this).index() == 1) {
+                // 给 b标签  切换类 rotate0
+                $(this).find('b').toggleClass('rotate0');
+                $(this).next().stop().slideToggle();
+                // 点击文章管理 自动触发下面 第一个li标签的点击事件
+                $('.level02>li').first().trigger('click');
+            }
+        });
+
+        // 给类名为 level02的ul 下面的每个li 绑定点击事件
+        $('.level02>li').on('click',function(){
+            // 给点击的li 添加 active 类 兄弟删除类
+            $(this).addClass('active').siblings().removeClass('active');
         })
 
     })
 </script>
+
 </html>
